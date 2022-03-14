@@ -1,0 +1,367 @@
+<html>
+<head>
+
+	<style>
+		canvas{
+			background: #dddddd;
+		}
+	</style>
+
+	<script>
+		//line 74
+
+		
+
+
+		// This class represents a log object
+		class logClass{
+			constructor(logX, logY,				// Location
+						logWidth, logHeight)	// Dimensions
+			{
+				//
+				// ADD YOUR CONSTRUCTOR CODE HERE
+				//
+				this.x = logX
+				this.y = logY
+				this.width = logWidth
+				this.height = logHeight
+
+				this.image = new Image();
+				this.image.src = 'log.jpg'
+				
+			}
+
+
+			// This method will be called by the gameUpdate function.
+			// It should take care of all movement, including wrapping
+			// (the gameUpdate() function should not have to worry about wrapping)
+			wrap(){
+				//
+				// ADD YOUR MOVEMENT CODE HERE
+				//
+				this.x += 5
+
+				//
+				// ADD YOUR WRAP LOGIC HERE
+				//
+				if(this.x >= cWidth)
+                {
+                    this.x = -20
+                }
+
+
+             
+			}
+
+
+			// This method will be called by the gameDraw function.
+			// It should draw a picture of the log on the screen.
+			draw(){
+				//
+				// ADD YOUR DRAW CODE HERE
+				//
+				c.drawImage(this.image,
+                                this.x,
+                                this.y,
+                                this.width,
+                                this.height);
+				
+				
+			}
+			
+		}
+		var log = new logClass(100, 100, 200 , 100);
+		
+		
+        
+
+
+
+		//
+		// Task #2 code (carClass) goes here
+		//
+		class carClass{
+			constructor(carX, carY,				// Location
+						carWidth, carHeight, // Dimensions
+						carDirection)	// Direction
+			{
+				//
+				// ADD YOUR CONSTRUCTOR CODE HERE
+				//
+				this.x = carX
+				this.y = carY
+				this.width = carWidth
+				this.height = carHeight
+				this.direction = carDirection
+
+				this.image = new Image();
+				this.image.src = 'carRight.png'
+				
+			}
+
+
+			// This method will be called by the gameUpdate function.
+			// It should take care of all movement, including wrapping
+			// (the gameUpdate() function should not have to worry about wrapping)
+			bounce(){
+				//
+				// ADD YOUR MOVEMENT CODE HERE
+				//
+				if(this.direction == "right")
+				{
+					// add to x coor
+					this.x+=5
+
+					if(this.x + this.width >= cWidth)
+					{
+						this.direction = "left";
+					}
+				}
+
+
+
+				else
+				{
+					// subtrate x coor
+					this.x-=5
+
+					if(this.x  <= 0)
+					{
+						this.direction = "right"
+					}
+				}
+
+				//
+				// ADD YOUR WRAP LOGIC HERE
+				//
+				
+
+
+             
+			}
+
+
+			// This method will be called by the gameDraw function.
+			// It should draw a picture of the log on the screen.
+			draw(){
+				//
+				// ADD YOUR DRAW CODE HERE
+				//
+				c.drawImage(this.image,
+                                this.x,
+                                this.y,
+                                this.width,
+                                this.height);
+				
+				
+			}
+			
+		}
+		var car1 = new carClass(100, 300, 200, 100, "right")
+
+
+
+		// This class represents the frog
+		class frogClass{
+			constructor(frogX, frogY,			// Location
+						frogWidth, frogHeight,	// Dimensions
+						frogDirection)			// Can be "Up", "Down", "Left", or "Right"
+			{
+				//
+				// ADD YOUR CONSTRUCTOR CODE HERE
+				//
+				this.x = frogX
+				this.y = frogY
+				this.width = frogWidth
+				this.height = frogHeight
+
+				this.image = new Image();
+				this.image.src = 'frogUp.PNG'
+			}
+
+
+			// Methods for frog movement
+			hopLeft(){
+				// ADD YOUR CODE HERE
+			}
+			hopRight(){
+				// ADD YOUR CODE HERE
+			}
+			hopUp(){
+				// ADD YOUR CODE HERE
+			}
+			hopDown(){
+				// ADD YOUR CODE HERE
+			}
+
+
+			// This method will be called by the gameDraw function.
+			// It should draw a picture of the frog on the screen.
+			draw(){
+				//
+				// ADD YOUR DRAW CODE HERE
+				//
+				c.drawImage(this.image,
+                                this.x,
+                                this.y,
+                                this.width,
+                                this.height);
+			}
+			
+
+			// This function returns true if this frog intersects "obj",
+			// where "obj" is either a car object or a log object.
+			// Returns false otherwise.
+			// Example: if (frog1.intersects(log1)){ ... }
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			
+		}
+		var frog = new frogClass(150, 150, 100 , 100);
+
+	
+		// Canvas context; used to call Canvas methods
+		var c;
+
+		// Canvas width and height.
+		var cWidth, cHeight;
+
+		// Stores the current keyboard state
+		var curkeys = [];
+		
+		// Stores keys that have been newly pressed since last update
+		var newkeys = [];
+
+
+
+		// The current game state, can be one of: "play", "win", "lose"
+		// You won't be working with this until Task #4
+		var gameState = "play";
+
+
+
+		// Initializes entire game framework. This method should only be called
+		// once, by the body onload event handler.
+		function gameFrameworkInit(){		
+			// Initialize key arrays
+			for (i = 0; i < 256; i++){
+				curkeys[i] = false;
+				newkeys[i] = false;
+			}
+		
+			// Initialize global variables for canvas
+			c = myCanvas.getContext('2d');
+			cWidth = myCanvas.width;
+			cHeight = myCanvas.height;
+
+
+			// Start listeners for getting keyboard state
+	        window.addEventListener('keydown',
+	        						 function(e){
+										if (!curkeys[e.keyCode]){
+											curkeys[e.keyCode] = true;
+											newkeys[e.keyCode] = true;
+										}
+									 }
+	        					   );
+	        
+	        window.addEventListener('keyup',
+	        						 function(e){ curkeys[e.keyCode] = false; }
+	        					   );
+
+			// Schedule the update function to be called right before the next repaint.
+			// (At the end of the update function, it will schedule itself to be called
+			// again before the NEXT repaint, and so on.
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+		// Main update loop for the entire game
+		function gameUpdate(){
+			//
+			// YOUR CODE GOES HERE
+			//
+			// the user is playing
+			if(gameState == "play")
+			{
+				car1.bounce()
+				log.wrap()
+
+				//}
+				//if()
+				//{
+
+				//}		
+				//if()
+				//{
+					
+				//}	
+			}
+			// game is in win state
+			// if(gameState == "win")
+			// {
+				
+			// }
+			// // game is in lose state
+			// if(gameState == "lose")
+			// {
+				
+			// }
+
+			//
+			// DO NOT ADD ANY CODE BELOW THIS, OR MODIFY ANY CODE BELOW THIS
+			//
+
+			// Reset newkeys
+			for (i = 0; i < 256; i++){
+				newkeys[i] = false;
+			}
+
+			// At the end of the update function, repaint the screen
+			gameDraw();
+				
+			// Last thing the update function does is to schedule itself to be called
+			// again before the next repaint
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+		// Main draw loop for the entire game
+		function gameDraw(){
+			// Clear the canvas before we draw the current frame
+			c.clearRect(0,0,cWidth,cHeight);
+
+			//
+			// YOUR DRAW CODE GOES HERE
+			//
+			log.draw()
+
+			frog.draw()
+
+			car1.draw()
+		}
+
+
+	</script>
+
+</head>
+
+
+<body onload="gameFrameworkInit()">
+	
+	<canvas id="myCanvas" width="800" height="600"></canvas>
+
+</body>
+
+
+</html>

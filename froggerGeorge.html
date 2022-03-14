@@ -115,6 +115,7 @@
 					if(this.x + this.width >= cWidth)
 					{
 						this.direction = "left";
+						this.image.src = 'carLeft.png'
 					}
 				}
 
@@ -128,6 +129,7 @@
 					if(this.x  <= 0)
 					{
 						this.direction = "right"
+						this.image.src = 'carRight.png'
 					}
 				}
 
@@ -183,15 +185,19 @@
 			// Methods for frog movement
 			hopLeft(){
 				// ADD YOUR CODE HERE
+				this.x-= 5
 			}
 			hopRight(){
 				// ADD YOUR CODE HERE
+				this.x+= 5
 			}
 			hopUp(){
 				// ADD YOUR CODE HERE
+				this.y+=5
 			}
 			hopDown(){
 				// ADD YOUR CODE HERE
+				this.y-=5
 			}
 
 
@@ -227,7 +233,7 @@
 			}
 			
 		}
-		var frog = new frogClass(150, 150, 100 , 100);
+		var frog = new frogClass(300, 500, 100 , 100);
 
 	
 		// Canvas context; used to call Canvas methods
@@ -297,15 +303,47 @@
 				car1.bounce()
 				log.wrap()
 
-				//}
-				//if()
-				//{
+				//if they hit left
+				if(curkeys[[37]])
+                    {
+                        frog.hopLeft()
+    
+                    }
+    
+                    if(curkeys[[39]])
+                    {
+                        frog.hopRight()
+    
+                    }
+                    if(curkeys[[40]])
+                    {
+                        frog.hopUp()
+    
+                    }
+                    if(curkeys[[38]])
+                    {
+                        frog.hopDown()
+    
+                    }
+					// check to see if hit crab
+                    if(frog.intersects(car1))
+                    {
+                        gameState = "lose";
+                        
+                    }
 
-				//}		
-				//if()
-				//{
-					
-				//}	
+                    if(frog.intersects(log))
+                    {
+                        gameState = "lose";
+
+                        
+                    }
+					if(frog.intersects(cHeight))
+                    {
+                        gameState = "win";
+
+                        
+                    }
 			}
 			// game is in win state
 			// if(gameState == "win")
@@ -349,6 +387,17 @@
 			frog.draw()
 
 			car1.draw()
+			if(gameState == "win")
+                {
+                    c.font = "30px Arial";
+                    c.fillText("You Win! Press Space to play again!", 250, 100);
+                    
+                }
+                if(gameState == "lose")
+                {
+                    c.font = "30px Arial";
+                    c.fillText("You Lost! Press Enter to play again!", 250, 100);
+                }
 		}
 
 

@@ -2,19 +2,27 @@
 <head>
 
 	<style>
-		canvas{
-			background: #dddddd;
+		canvas
+		{
+			background: #3469bb;
 		}
 	</style>
 
 	<script>
 		//line 74
 
+
+		var wins = 0
+		var loss = 0
+
+		var lives = 3
+
 		
 
 
 		// This class represents a log object
-		class logClass{
+		class logClass
+		{
 			constructor(logX, logY,				// Location
 						logWidth, logHeight)	// Dimensions
 			{
@@ -35,28 +43,30 @@
 			// This method will be called by the gameUpdate function.
 			// It should take care of all movement, including wrapping
 			// (the gameUpdate() function should not have to worry about wrapping)
-			wrap(){
+			wrap()
+			{
 				//
 				// ADD YOUR MOVEMENT CODE HERE
 				//
-				this.x += 5
+				this.x -= 5
 
 				//
 				// ADD YOUR WRAP LOGIC HERE
 				//
-				if(this.x >= cWidth)
+				if(this.x < -300)
                 {
-                    this.x = -20
+                    this.x = +1000
                 }
 
 
              
-			}
+			 }
 
 
 			// This method will be called by the gameDraw function.
 			// It should draw a picture of the log on the screen.
-			draw(){
+			draw()
+			{
 				//
 				// ADD YOUR DRAW CODE HERE
 				//
@@ -70,7 +80,8 @@
 			}
 			
 		}
-		var log = new logClass(100, 100, 200 , 100);
+		var log = new logClass(100, 200, 200 , 100);
+		var log2 = new logClass(-1000, 200, 200 , 100);
 		
 		
         
@@ -80,7 +91,8 @@
 		//
 		// Task #2 code (carClass) goes here
 		//
-		class carClass{
+		class carClass
+		{
 			constructor(carX, carY,				// Location
 						carWidth, carHeight, // Dimensions
 						carDirection)	// Direction
@@ -103,10 +115,12 @@
 			// This method will be called by the gameUpdate function.
 			// It should take care of all movement, including wrapping
 			// (the gameUpdate() function should not have to worry about wrapping)
-			bounce(){
+			bounce()
+			{
 				//
 				// ADD YOUR MOVEMENT CODE HERE
 				//
+				// if direction is left or right
 				if(this.direction == "right")
 				{
 					// add to x coor
@@ -115,7 +129,7 @@
 					if(this.x + this.width >= cWidth)
 					{
 						this.direction = "left";
-						this.image.src = 'carLeft.png'
+						
 					}
 				}
 
@@ -123,19 +137,19 @@
 
 				else
 				{
-					// subtrate x coor
+					// if car needs to change direction
 					this.x-=5
 
 					if(this.x  <= 0)
 					{
 						this.direction = "right"
-						this.image.src = 'carRight.png'
+						
 					}
 				}
 
 				//
 				// ADD YOUR WRAP LOGIC HERE
-				//
+				// (look up!)
 				
 
 
@@ -145,10 +159,19 @@
 
 			// This method will be called by the gameDraw function.
 			// It should draw a picture of the log on the screen.
-			draw(){
+			draw()
+			{
 				//
 				// ADD YOUR DRAW CODE HERE
 				//
+				if(this.direction == "right")
+				{
+					this.image.src = "carRight.png"
+				}
+				if(this.direction == "left")
+				{
+					this.image.src = "carLeft.png"
+				}
 				c.drawImage(this.image,
                                 this.x,
                                 this.y,
@@ -159,12 +182,13 @@
 			}
 			
 		}
-		var car1 = new carClass(100, 300, 200, 100, "right")
+		var car1 = new carClass(50, 500, 200, 100, "right")
 
 
 
 		// This class represents the frog
-		class frogClass{
+		class frogClass
+		{
 			constructor(frogX, frogY,			// Location
 						frogWidth, frogHeight,	// Dimensions
 						frogDirection)			// Can be "Up", "Down", "Left", or "Right"
@@ -180,25 +204,50 @@
 				this.image = new Image();
 				this.image.src = 'frogUp.PNG'
 			}
+			
 
 
 			// Methods for frog movement
-			hopLeft(){
+			hopLeft()
+			{
 				// ADD YOUR CODE HERE
-				this.x-= 5
+				this.x-= 25
+				this.image.src = 'frogLeft.png'
 			}
-			hopRight(){
+			hopRight()
+			{
 				// ADD YOUR CODE HERE
-				this.x+= 5
+				this.x+= 25
+				this.image.src = 'frogRight.png'
 			}
-			hopUp(){
+			hopUp()
+			{
 				// ADD YOUR CODE HERE
-				this.y+=5
+				this.y+=25
+				this.image.src = 'frogDown.png'
 			}
-			hopDown(){
+			hopDown()
+			{
 				// ADD YOUR CODE HERE
-				this.y-=5
+				this.y-=25
+				this.image.src = 'frogUp.png'
 			}
+			win()
+			{
+				if(this.y >= 800)
+				{
+					gameState = "win"
+					wins++
+				}
+				// dev cheat
+				if(this.y <= 100)
+				{
+					gameState = "win"
+					wins++
+				}
+			}
+			
+			
 
 
 			// This method will be called by the gameDraw function.
@@ -233,7 +282,9 @@
 			}
 			
 		}
-		var frog = new frogClass(300, 500, 100 , 100);
+		
+
+		var frog = new frogClass(500, 650, 50 , 50);
 
 	
 		// Canvas context; used to call Canvas methods
@@ -269,6 +320,7 @@
 			c = myCanvas.getContext('2d');
 			cWidth = myCanvas.width;
 			cHeight = myCanvas.height;
+			
 
 
 			// Start listeners for getting keyboard state
@@ -302,59 +354,57 @@
 			{
 				car1.bounce()
 				log.wrap()
+				log2.wrap()
+				frog.win()
 
 				//if they hit left
-				if(curkeys[[37]])
-                    {
-                        frog.hopLeft()
-    
-                    }
-    
-                    if(curkeys[[39]])
-                    {
-                        frog.hopRight()
-    
-                    }
-                    if(curkeys[[40]])
-                    {
-                        frog.hopUp()
-    
-                    }
-                    if(curkeys[[38]])
-                    {
-                        frog.hopDown()
-    
-                    }
-					// check to see if hit crab
-                    if(frog.intersects(car1))
-                    {
-                        gameState = "lose";
-                        
-                    }
+				if(newkeys[[37]])
+				{
+					frog.hopLeft()
+				}
+		
+				if(newkeys[[39]])
+				{
+					frog.hopRight()
+				}
+				if(newkeys[[40]])
+				{
+					frog.hopUp()
+				}
+				if(newkeys[[38]])
+				{
+					frog.hopDown()
+				}
+						
+				// check to see if hit crab
+				if(frog.intersects(car1))
+				{
+					gameState = "lose";
+					loss++ 
+					lives--     
+				}
 
-                    if(frog.intersects(log))
-                    {
-                        gameState = "lose";
-
-                        
-                    }
-					if(frog.intersects(cHeight))
-                    {
-                        gameState = "win";
-
-                        
-                    }
+				if(frog.intersects(log))
+				{
+					gameState = "lose";
+					loss++
+					lives--       
+				}		
 			}
-			// game is in win state
-			// if(gameState == "win")
-			// {
-				
-			// }
-			// // game is in lose state
-			// if(gameState == "lose")
-			// {
-				
-			// }
+
+			if(curkeys[[32]])
+            {
+                gameState = "play"
+				frog.x = 500
+				frog.y = 650
+				console.log(gameState)		
+            }
+			if(lives<= 0)
+			{
+				alert("You have Lost! Reload the Page to Restart")
+				gameState = "lose"
+			}
+			
 
 			//
 			// DO NOT ADD ANY CODE BELOW THIS, OR MODIFY ANY CODE BELOW THIS
@@ -384,10 +434,12 @@
 			//
 			log.draw()
 
+			log2.draw()
+
 			frog.draw()
 
 			car1.draw()
-			if(gameState == "win")
+				if(gameState == "win")
                 {
                     c.font = "30px Arial";
                     c.fillText("You Win! Press Space to play again!", 250, 100);
@@ -396,8 +448,15 @@
                 if(gameState == "lose")
                 {
                     c.font = "30px Arial";
-                    c.fillText("You Lost! Press Enter to play again!", 250, 100);
+                    c.fillText("You Lost! Press Space to play again!", 250, 100);
                 }
+				
+                c.font = "30px Impact";
+                c.fillText("Wins: " + wins + " " + "Losses: " + loss, 700, 465);
+
+				c.font = "30px Impact";
+                c.fillText("Lives: " + lives , 100, 465);
+                
 		}
 
 
@@ -408,7 +467,7 @@
 
 <body onload="gameFrameworkInit()">
 	
-	<canvas id="myCanvas" width="800" height="600"></canvas>
+	<canvas id="myCanvas" width="1000" height="700" style="background: url('background1.png')"></canvas>
 
 </body>
 
